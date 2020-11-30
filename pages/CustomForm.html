@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Time Zone Converter Web</title>
+    <link rel="stylesheet" href="/css/msteams-16.css" />
+    <link rel="stylesheet" href="/css/Custom.css" />
+    <link rel="stylesheet" href="/css/Site.css" />
+
+    <script src="https://statics.teams.cdn.office.net/sdk/v1.5.2/js/MicrosoftTeams.min.js" asp-append-version="true"></script>
+</head>
+<body class="theme-light">
+    <div class="surface">
+        <div class="panel">
+
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            padding-left: 4px;
+            padding-right: 4px;
+        }
+        select { 
+                appearance: none; 
+                outline: 0; 
+                background: #F0F2F4; 
+                background-image: none; 
+                width: 100%; 
+                height: 100%; 
+                color: black; 
+                cursor: pointer;                  
+                border-radius:3px; 
+                border: none;
+                padding-left: 15px;
+            } 
+            .select { 
+                position: relative; 
+                display: block; 
+                width: 16em; 
+                height: 2em; 
+                line-height: 3; 
+                overflow: hidden; 
+                border-radius: .25em; 
+                padding-bottom:10px; 
+                  
+            } 
+    </style>
+    <title>Time Zone Converter</title>
+</head>
+<body>    
+    <script>        
+        microsoftTeams.initialize();
+
+        const convertTime = async (time, region) => {            
+            try {
+                return await axios.get(`https://msteamstimeconverter.azurewebsites.net/api/TimeConverter?time=${time}&region=${region}`)                                   
+            } catch (error) {
+                console.error(error)
+            }
+        }       
+
+        const validateForm = async () => {
+            event.preventDefault();
+            
+            const time = document.forms["customerForm"]["input_time"].value
+            const region = document.forms["customerForm"]["timezone"].value                
+            
+            const convertedTime = await convertTime(time, region)
+            
+            if (convertedTime.data.data) {                
+                console.log(convertedTime.data.data.old_time,"ist")
+                console.log(convertedTime.data.data.new_time, region)
+            }                      
+
+            microsoftTeams.tasks.submitTask({convertedTime:convertedTime.data.data.new_time, region}, "012ebe53-ea73-48c5-af9e-d1eb3ac95ad2");            
+            return true;
+        }
+    </script>
+    <div class="surface theme-light">
+        <div class="panel">
+            <div class="font-semibold font-title">Enter Time and Region</div>
+            <form id="customerForm" onSubmit="validateForm()">
+                <div>
+                    <div class="form-group form-field-input" style="margin-bottom: 20px; margin-top: 30px;"></div><label for="time">Time: </label><br><input class="form-control input-field" id="input_time" type="text" placeholder="Enter Time in Local Time Zone" name="name" tabindex="1" autofocus style="max-width: 16em; margin-top:10px;">
+                    <div class="form-group form-field-input" style="margin-bottom: 20px;"></div><label for="Region">Region: </label>
+                    <div class="select"> 
+                        <select name="timezone" id="timezones">
+                            <option value="cet">CET</option>
+                            <option value="gmt">GMT</option>
+                            <option value="est">EST</option>                        
+                            </select>
+                        </div>
+                      <br>
+                    <!--<input class="form-control input-field" id="email" type="email" placeholder="name@email.com" name="email" tabindex="2">                    -->
+                    <button class="btn button-primary" type="submit" tabindex="5" style="margin-top: 20px;">Convert</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</body>
+</html>
+        </div>
+    </div>
+</body>
+</html>
