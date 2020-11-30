@@ -1,4 +1,4 @@
-# Teams Task Module
+# MS Teams Bot - Time Converter
 
 Bot Framework Teams Task Module sample.
 
